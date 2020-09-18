@@ -1,5 +1,9 @@
 mod arguments;
 
+use self::arguments::get_arguments;
+use std::env;
+
 fn main() {
-    println!("Hello, world!");
+    let args = get_arguments(env::args());
+    println!("Arguments: {:?}", args);
 }
