@@ -55,8 +55,8 @@ fn process_raw_fields(raw_fields: Vec<&str>) -> Vec<Field> {
 
 #[derive(Debug)]
 pub struct ParsleyArguments {
-    fields: Vec<Field>,
-    format: OutputFormat,
+    pub fields: Vec<Field>,
+    pub format: OutputFormat,
 }
 
 impl ParsleyArguments {
@@ -80,6 +80,10 @@ impl Field {
             name: name,
             expression: expression,
         }
+    }
+
+    pub fn to_capture_group(&self) -> String {
+        format!("(?P<{}>{})", self.name, self.expression)
     }
 }
 
