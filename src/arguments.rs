@@ -1,6 +1,7 @@
 extern crate clap;
 use clap::{App, Arg, ArgGroup, ArgMatches};
 use std::ffi::OsString;
+use crate::field::Field;
 
 pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
 where
@@ -72,24 +73,6 @@ impl ParsleyArguments {
     }
 }
 
-#[derive(Debug)]
-pub struct Field {
-    name: String,
-    expression: String,
-}
-
-impl Field {
-    fn new(name: String, expression: String) -> Field {
-        Field {
-            name: name,
-            expression: expression,
-        }
-    }
-
-    pub fn to_capture_group(&self) -> String {
-        format!("(?P<{}>{})", self.name, self.expression)
-    }
-}
 
 #[derive(Debug)]
 pub enum OutputFormat {
