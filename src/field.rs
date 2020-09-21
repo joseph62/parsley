@@ -73,17 +73,15 @@ mod tests {
 
     #[test]
     fn process_multiple_fields() {
-        let fields = process_raw_fields(vec!["name:[A-Z][a-z]+", "_::", "age:[0-9]+"]);
+        let fields = combine_fields("", process_raw_fields(vec!["name:[A-Z][a-z]+", "_::", "age:[0-9]+"]));
         assert_eq!(fields.len(), 3);
-        let expected = vec![
+        let expected = combine_fields("", vec![
             Field::Named(String::from("name"), String::from("[A-Z][a-z]+")),
             Field::Anonymous(String::from(":")),
             Field::Named(String::from("age"), String::from("[0-9]+")),
-        ];
+        ]);
 
-        for (field, expected) in fields.iter().zip(expected) {
-            assert_eq!(field.to_capture_group(), expected.to_capture_group());
-        }
+        assert_eq!(fields, expected);
     }
 
     #[test]
