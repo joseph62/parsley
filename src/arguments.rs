@@ -1,7 +1,7 @@
 extern crate clap;
+use crate::field::{process_raw_fields, Field};
 use clap::{App, Arg, ArgGroup, ArgMatches};
 use std::ffi::OsString;
-use crate::field::Field;
 
 pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
 where
@@ -46,18 +46,6 @@ Field format is as follows '<name>:<regular expression>'.",
     ParsleyArguments::new(fields, format)
 }
 
-fn process_raw_fields(raw_fields: Vec<&str>) -> Vec<Field> {
-    let mut fields: Vec<Field> = vec![];
-    for raw_field in raw_fields {
-        let split_field: Vec<&str> = raw_field.splitn(2, ":").collect();
-        fields.push(Field::new(
-            String::from(split_field[0]),
-            String::from(split_field[1]),
-        ));
-    }
-    fields
-}
-
 #[derive(Debug)]
 pub struct ParsleyArguments {
     pub fields: Vec<Field>,
@@ -72,7 +60,6 @@ impl ParsleyArguments {
         }
     }
 }
-
 
 #[derive(Debug)]
 pub enum OutputFormat {
