@@ -2,17 +2,13 @@ mod arguments;
 mod field;
 
 use self::arguments::get_arguments;
+use self::field::combine_fields;
 use std::env;
 use std::io;
 
 fn main() {
     let args = get_arguments(env::args());
-    let capture_expression = args
-        .fields
-        .into_iter()
-        .map(|field| field.to_capture_group())
-        .collect::<Vec<String>>()
-        .join(" ");
+    let capture_expression = combine_fields(" ", args.fields);
     println!("Using capture expression: '{}'", capture_expression);
     process_input();
 }

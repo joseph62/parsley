@@ -19,6 +19,14 @@ impl Field {
     }
 }
 
+pub fn combine_fields(separator: &str, fields: Vec<Field>) -> String {
+     fields
+        .into_iter()
+        .map(|field| field.to_capture_group())
+        .collect::<Vec<String>>()
+        .join(separator)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -30,5 +38,17 @@ mod tests {
         let capture_group = field.to_capture_group();
         
         assert_eq!(capture_group, "(?P<name>[A-Z][A-Za-z]*)");
+    }
+
+    #[test]
+    fn combines_fields() {
+        let fields = vec!(
+            Field::new(String::from("name"), String::from("[A-Z][A-Za-z]*")),
+            Field::new(String::from("age"), String::from("[0-9]+")),
+        );
+
+        let pattern = combine_fields("", fields);
+
+        assert_eq!(pattern, "(?P<name>[A-Z][A-Za-z]*)(?P<age>[0-9]+)");
     }
 }
