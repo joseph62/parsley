@@ -1,22 +1,25 @@
 mod arguments;
 mod field;
+mod matcher;
 
 use self::arguments::get_arguments;
-use self::field::combine_fields;
+use self::matcher::Matcher;
 use std::env;
 use std::io;
 
 fn main() {
     let args = get_arguments(env::args());
-    let capture_expression = combine_fields(" ", args.fields);
-    println!("Using capture expression: '{}'", capture_expression);
-    process_input();
+    let matcher = Matcher::new(args.fields);
+    process_input(matcher);
 }
 
-fn process_input() {
+fn process_input(matcher: Matcher) {
     if let Some(line) = read_line() {
-        println!("{}", line);
-        process_input();
+        match matcher.match_line(line.as_str()) {
+            Some(bindings) => println!("Found a match! {:?}", bindings),
+            None => println!("Did not match line '{}'", line)
+        }
+        process_input(matcher);
     }
 }
 

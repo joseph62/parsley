@@ -16,7 +16,7 @@ impl Field {
     }
 }
 
-pub fn combine_fields(separator: &str, fields: Vec<Field>) -> String {
+pub fn combine_fields(separator: &str, fields: &[Field]) -> String {
     fields
         .into_iter()
         .map(|field| field.to_capture_group())
@@ -73,7 +73,7 @@ mod tests {
 
     #[test]
     fn process_multiple_fields() {
-        let fields = combine_fields("", process_raw_fields(vec!["name:[A-Z][a-z]+", "_::", "age:[0-9]+"]));
+        let fields = combine_fields("", process_raw_fields(vec!["name:[A-Z][a-z]+", "_::", "age:[0-9]+"]).as_slice());
         assert_eq!(fields.len(), 3);
         let expected = combine_fields("", vec![
             Field::Named(String::from("name"), String::from("[A-Z][a-z]+")),
@@ -100,7 +100,7 @@ mod tests {
             Field::Named(String::from("age"), String::from("[0-9]+")),
         ];
 
-        let pattern = combine_fields("", fields);
+        let pattern = combine_fields("", fields.as_slice());
 
         assert_eq!(pattern, "(?P<name>[A-Z][A-Za-z]*)(?P<age>[0-9]+)");
     }
