@@ -1,8 +1,12 @@
 extern crate clap;
 use clap::{App, Arg, ArgGroup, ArgMatches};
-use std::env;
+use std::ffi::OsString;
 
-pub fn get_arguments(args: env::Args) -> ParsleyArguments {
+pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
+where
+    I: IntoIterator<Item = T>,
+    T: Into<OsString> + Clone,
+{
     let matches: ArgMatches = App::new("parsley")
         .about("Parse input lines using specified fields")
         .arg(
