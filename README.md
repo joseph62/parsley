@@ -11,3 +11,11 @@ Parse the fields `name` and `age` and output as json. The use of the explicit an
 ... INPUT
 {"name":"Sean","age":"100"}
 ```
+
+Parse the output of ls -l
+```
+ls -l | ./target/debug/parsley "permissions:[^ ]+" " " "hardlinks:[^ ]+" \
+                               " " "user:[^ ]+" " " "group:[^ ]+" " +" \
+                               "size:[^ ]+" " " "datetime:[A-Z][a-z]+ [0-9]{2} [0-9]{2}:[0-9]{2}" \
+                               " " "filename:.*"
+```
