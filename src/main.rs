@@ -17,7 +17,7 @@ fn process_input(matcher: Matcher) {
     if let Some(line) = read_line() {
         match matcher.match_line(line.as_str()) {
             Some(bindings) => println!("Found a match! {:?}", bindings),
-            None => println!("Did not match line '{}'", line)
+            None => println!("Did not match line '{}'", line),
         }
         process_input(matcher);
     }
