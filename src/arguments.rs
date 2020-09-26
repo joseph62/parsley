@@ -1,5 +1,6 @@
 extern crate clap;
 use crate::field::{process_raw_fields, Field};
+use crate::serializers::OutputFormat;
 use clap::{App, Arg, ArgGroup, ArgMatches};
 use std::ffi::OsString;
 
@@ -59,10 +60,4 @@ impl ParsleyArguments {
             format: format,
         }
     }
-}
-
-#[derive(Debug)]
-pub enum OutputFormat {
-    JSON,
-    CSV,
 }

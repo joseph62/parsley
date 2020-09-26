@@ -1,25 +1,32 @@
 mod arguments;
 mod field;
 mod matcher;
+mod serializers;
 
 use self::arguments::get_arguments;
 use self::matcher::Matcher;
+use self::serializers::{get_serializer, ParsleySerializer};
 use std::env;
 use std::io;
 
 fn main() {
     let args = get_arguments(env::args());
     let matcher = Matcher::new(args.fields);
-    process_input(matcher);
+    let serializer = get_serializer(args.format, |line| println!("{}", line));
+    process_input(matcher, serializer);
 }
 
-fn process_input(matcher: Matcher) {
+fn process_input(matcher: Matcher, serializer: Box<dyn ParsleySerializer>) {
+    serializer.start();
+    process_next_line(matcher, &serializer);
+    serializer.end();
+}
+fn process_next_line(matcher: Matcher, serializer: &Box<dyn ParsleySerializer>) {
     if let Some(line) = read_line() {
-        match matcher.match_line(line.as_str()) {
-            Some(bindings) => println!("Found a match! {:?}", bindings),
-            None => println!("Did not match line '{}'", line),
+        if let Some(bindings) = matcher.match_line(line.as_str()) {
+            serializer.serialize(bindings);
         }
-        process_input(matcher);
+        process_next_line(matcher, serializer);
     }
 }
 

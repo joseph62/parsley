@@ -84,7 +84,8 @@ mod tests {
                 Field::Named(String::from("name"), String::from("[A-Z][a-z]+")),
                 Field::Anonymous(String::from(":")),
                 Field::Named(String::from("age"), String::from("[0-9]+")),
-            ].as_slice(),
+            ]
+            .as_slice(),
         );
 
         assert_eq!(fields, expected);

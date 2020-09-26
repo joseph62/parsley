@@ -61,7 +61,6 @@ mod tests {
         expected.insert(String::from("age"), String::from("100"));
 
         assert_eq!(result, Option::Some(expected));
-
     }
 
     #[test]
