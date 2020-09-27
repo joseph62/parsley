@@ -14,6 +14,22 @@ impl Field {
             Field::Anonymous(expression) => format!("{}", expression),
         }
     }
+
+    pub fn get_name(&self) -> Option<String> {
+        match self {
+            Field::Named(name, _) => Option::from(String::from(name)),
+            Field::Anonymous(_) => Option::None,
+        }
+    }
+}
+
+pub fn all_names(fields: &[Field]) -> Vec<String> {
+    fields
+        .iter()
+        .map(|field| field.get_name())
+        .filter(|name| name.is_some())
+        .map(|name| name.unwrap())
+        .collect()
 }
 
 pub fn combine_fields(separator: &str, fields: &[Field]) -> String {

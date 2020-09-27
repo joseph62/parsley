@@ -35,10 +35,10 @@ Field format is as follows '<name>:<regular expression>'.",
         .get_matches_from(args);
 
     let raw_fields: Vec<&str> = matches.values_of("fields").unwrap().collect();
-    let output_csv: bool = matches.value_of("csv").is_some();
 
     let fields: Vec<Field> = process_raw_fields(raw_fields);
-    let format = if output_csv {
+
+    let format = if matches.is_present("csv") {
         OutputFormat::CSV
     } else {
         OutputFormat::JSON

@@ -14,16 +14,16 @@ impl JsonSerializer {
 }
 
 impl ParsleySerializer for JsonSerializer {
-    fn start(&self) {}
+    fn start(&mut self) {}
 
-    fn serialize(&self, map: HashMap<String, String>) {
+    fn serialize(&mut self, map: HashMap<String, String>) {
         let callback = self.output_callback;
         if let Ok(line) = to_string(&map) {
             callback(line)
         }
     }
 
-    fn end(&self) {}
+    fn end(&mut self) {}
 }
 
 #[cfg(tests)]

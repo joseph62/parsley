@@ -4,6 +4,7 @@ mod matcher;
 mod serializers;
 
 use self::arguments::get_arguments;
+use self::field::all_names;
 use self::matcher::Matcher;
 use self::serializers::{get_serializer, ParsleySerializer};
 use std::env;
@@ -11,17 +12,21 @@ use std::io;
 
 fn main() {
     let args = get_arguments(env::args());
+    let mut serializer = get_serializer(
+        args.format,
+        |line| println!("{}", line),
+        all_names(args.fields.as_slice()),
+    );
     let matcher = Matcher::new(args.fields);
-    let serializer = get_serializer(args.format, |line| println!("{}", line));
-    process_input(matcher, serializer);
+    process_input(matcher, &mut serializer);
 }
 
-fn process_input(matcher: Matcher, serializer: Box<dyn ParsleySerializer>) {
+fn process_input(matcher: Matcher, serializer: &mut Box<dyn ParsleySerializer>) {
     serializer.start();
-    process_next_line(matcher, &serializer);
+    process_next_line(matcher, serializer);
     serializer.end();
 }
-fn process_next_line(matcher: Matcher, serializer: &Box<dyn ParsleySerializer>) {
+fn process_next_line(matcher: Matcher, serializer: &mut Box<dyn ParsleySerializer>) {
     if let Some(line) = read_line() {
         if let Some(bindings) = matcher.match_line(line.as_str()) {
             serializer.serialize(bindings);
