@@ -17,7 +17,12 @@ where
                 .help("Define the fields to parse")
                 .long_help(
                     "Define the fields to parse.
-Field format is as follows '<name>:<regular expression>'.",
+Field format is as follows 
+Named:     '<name>:<regular expression>'
+Anonymous: '<regular expression>'
+                    -or-
+           '_:<regular expression>
+Named groups will show up in the structured output.",
                 )
                 .multiple(true),
         )
