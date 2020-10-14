@@ -3,13 +3,8 @@ mod json;
 
 use self::csv::CsvSerializer;
 use self::json::JsonSerializer;
+use crate::arguments::OutputFormat;
 use std::collections::HashMap;
-
-#[derive(Debug)]
-pub enum OutputFormat {
-    JSON,
-    CSV,
-}
 
 pub trait ParsleySerializer {
     fn start(&mut self);
