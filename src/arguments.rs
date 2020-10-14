@@ -1,7 +1,7 @@
 extern crate clap;
 use crate::field::{process_raw_fields, Field};
 use crate::serializers::OutputFormat;
-use clap::{App, Arg, ArgGroup, ArgMatches};
+use clap::{App, Arg, ArgGroup, ArgMatches, crate_name, crate_version, crate_authors};
 use std::ffi::OsString;
 
 pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
@@ -9,7 +9,9 @@ where
     I: IntoIterator<Item = T>,
     T: Into<OsString> + Clone,
 {
-    let matches: ArgMatches = App::new("parsley")
+    let matches: ArgMatches = App::new(crate_name!())
+        .version(crate_version!())
+        .author(crate_authors!("\n"))
         .about("Parse input lines using specified fields")
         .arg(
             Arg::with_name("fields")
@@ -21,7 +23,7 @@ Field format is as follows
 Named:     '<name>:<regular expression>'
 Anonymous: '<regular expression>'
                     -or-
-           '_:<regular expression>
+           '_:<regular expression>'
 Named groups will show up in the structured output.",
                 )
                 .multiple(true),
