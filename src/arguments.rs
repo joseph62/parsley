@@ -1,6 +1,6 @@
 extern crate clap;
 use crate::field::{process_raw_fields, Field};
-use clap::{crate_authors, crate_name, crate_version, App, Arg, ArgGroup, ArgMatches};
+use clap::{arg_enum, crate_authors, crate_name, crate_version, value_t, App, Arg, ArgMatches};
 use std::ffi::OsString;
 
 pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
@@ -18,7 +18,7 @@ where
                 .help("Define the fields to parse")
                 .long_help(
                     "Define the fields to parse.
-Field format is as follows 
+Field format is as follows
 Named:     '<name>:<regular expression>'
 Anonymous: '<regular expression>'
                     -or-
@@ -28,27 +28,21 @@ Named groups will show up in the structured output.",
                 .multiple(true),
         )
         .arg(
-            Arg::with_name("json")
-                .long("json")
-                .help("Format output as JSON"),
+            Arg::with_name("format")
+                .long("format")
+                .short("f")
+                .possible_values(&OutputFormat::variants())
+                .default_value("json")
+                .case_insensitive(true)
+                .help("Specify the format of the output data"),
         )
-        .arg(
-            Arg::with_name("csv")
-                .long("csv")
-                .help("Format output as CSV"),
-        )
-        .group(ArgGroup::with_name("output_format").arg("json").arg("csv"))
         .get_matches_from(args);
 
     let raw_fields: Vec<&str> = matches.values_of("fields").unwrap().collect();
 
     let fields: Vec<Field> = process_raw_fields(raw_fields);
 
-    let format = if matches.is_present("csv") {
-        OutputFormat::CSV
-    } else {
-        OutputFormat::JSON
-    };
+    let format = value_t!(matches, "format", OutputFormat).unwrap_or_else(|e| e.exit());
 
     ParsleyArguments::new(fields, format)
 }
@@ -68,8 +62,10 @@ impl ParsleyArguments {
     }
 }
 
-#[derive(Debug)]
-pub enum OutputFormat {
-    JSON,
-    CSV,
+arg_enum! {
+    #[derive(PartialEq, Debug)]
+    pub enum OutputFormat {
+        Json,
+        Csv,
+    }
 }

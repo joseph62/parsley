@@ -18,7 +18,7 @@ pub fn get_serializer(
     keys: Vec<String>,
 ) -> Box<dyn ParsleySerializer> {
     match format {
-        OutputFormat::JSON => Box::new(JsonSerializer::new(output_callback)),
-        OutputFormat::CSV => Box::new(CsvSerializer::new(output_callback, keys)),
+        OutputFormat::Json => Box::new(JsonSerializer::new(output_callback)),
+        OutputFormat::Csv => Box::new(CsvSerializer::new(output_callback, keys)),
     }
 }
