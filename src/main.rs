@@ -28,8 +28,9 @@ fn process_input(matcher: Matcher, serializer: &mut Box<dyn ParsleySerializer>) 
 }
 fn process_next_line(matcher: Matcher, serializer: &mut Box<dyn ParsleySerializer>) {
     if let Some(line) = read_line() {
-        if let Some(bindings) = matcher.match_line(line.as_str()) {
-            serializer.serialize(bindings);
+        match matcher.match_line(line.as_str()) {
+            Some(bindings) => serializer.serialize(bindings),
+            None => eprintln!("Failed to match: {}", line),
         }
         process_next_line(matcher, serializer);
     }
