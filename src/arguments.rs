@@ -1,7 +1,7 @@
 extern crate clap;
 use crate::field::{process_raw_fields, Field};
 use crate::serializers::OutputFormat;
-use clap::{App, Arg, ArgGroup, ArgMatches, crate_name, crate_version, crate_authors};
+use clap::{crate_authors, crate_name, crate_version, App, Arg, ArgGroup, ArgMatches};
 use std::ffi::OsString;
 
 pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
