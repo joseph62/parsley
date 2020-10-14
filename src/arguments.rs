@@ -1,6 +1,8 @@
 extern crate clap;
-use crate::field::{process_raw_fields, Field};
-use clap::{arg_enum, crate_authors, crate_name, crate_version, value_t, App, Arg, ArgMatches};
+use crate::field::Field;
+use clap::{
+    arg_enum, crate_authors, crate_name, crate_version, value_t, values_t, App, Arg, ArgMatches,
+};
 use std::ffi::OsString;
 
 pub fn get_arguments<I, T>(args: I) -> ParsleyArguments
@@ -38,9 +40,7 @@ Named groups will show up in the structured output.",
         )
         .get_matches_from(args);
 
-    let raw_fields: Vec<&str> = matches.values_of("fields").unwrap().collect();
-
-    let fields: Vec<Field> = process_raw_fields(raw_fields);
+    let fields = values_t!(matches, "fields", Field).unwrap_or_else(|e| e.exit());
 
     let format = value_t!(matches, "format", OutputFormat).unwrap_or_else(|e| e.exit());
 

@@ -1,5 +1,9 @@
+use std::str::FromStr;
+
 const ANONYMOUS_NAME: &str = "_";
 const FIELD_SEPARATION: &str = ":";
+
+pub struct ParseFieldError;
 
 #[derive(Debug)]
 pub enum Field {
@@ -23,6 +27,14 @@ impl Field {
     }
 }
 
+impl FromStr for Field {
+    type Err = ParseFieldError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(process_raw_field(s))
+    }
+}
+
 pub fn all_names(fields: &[Field]) -> Vec<String> {
     fields
         .iter()
@@ -38,14 +50,6 @@ pub fn combine_fields(separator: &str, fields: &[Field]) -> String {
         .map(|field| field.to_capture_group())
         .collect::<Vec<String>>()
         .join(separator)
-}
-
-pub fn process_raw_fields(raw_fields: Vec<&str>) -> Vec<Field> {
-    let mut fields: Vec<Field> = vec![];
-    for raw_field in raw_fields {
-        fields.push(process_raw_field(raw_field));
-    }
-    fields
 }
 
 fn process_raw_field(raw_field: &str) -> Field {
@@ -85,26 +89,6 @@ mod tests {
         let field = process_raw_field("name:[A-Z][a-z]+");
         let expected = Field::Named(String::from("name"), String::from("[A-Z][a-z]+"));
         assert_eq!(field.to_capture_group(), expected.to_capture_group());
-    }
-
-    #[test]
-    fn process_multiple_fields() {
-        let fields = combine_fields(
-            "",
-            process_raw_fields(vec!["name:[A-Z][a-z]+", "_::", "age:[0-9]+"]).as_slice(),
-        );
-
-        let expected = combine_fields(
-            "",
-            vec![
-                Field::Named(String::from("name"), String::from("[A-Z][a-z]+")),
-                Field::Anonymous(String::from(":")),
-                Field::Named(String::from("age"), String::from("[0-9]+")),
-            ]
-            .as_slice(),
-        );
-
-        assert_eq!(fields, expected);
     }
 
     #[test]
