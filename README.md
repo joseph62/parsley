@@ -6,7 +6,7 @@ Parsley is a command line utility that allows the user to specify fields to pars
 ## Usage
 Parse the fields `name` and `age` and output as json. The use of the explicit anonymous capture is only required if the pattern includes a ':'
 ```
->>> parsley "name:[^ ]+" "_::" "age:.*" --json <<INPUT
+>>> parsley "name:[^ ]+" "_::" "age:.*" --format json <<INPUT
 ... Sean:100
 ... INPUT
 {"name":"Sean","age":"100"}
@@ -23,7 +23,7 @@ total 28
 drwxr-xr-x. 3 sean sean 4096 Sep 26 18:33 src
 drwxr-xr-x. 4 sean sean 4096 Sep 18 19:39 target
 
->>> ls -l | ./target/debug/parsley --csv "permissions:[^ ]+" " " "hardlinks:[^ ]+" \
+>>> ls -l | parsley --format csv "permissions:[^ ]+" " " "hardlinks:[^ ]+" \
 ...                               " " "user:[^ ]+" " " "group:[^ ]+" " +" \
 ...                               "size:[^ ]+" " " "datetime:[A-Z][a-z]+ [0-9]{2} [0-9]{2}:[0-9]{2}" \
 ...                               " " "filename:.*"
