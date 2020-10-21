@@ -13,23 +13,20 @@ pub struct Matcher {
 impl Matcher {
     pub fn new(fields: Vec<Field>) -> Matcher {
         let pattern = combine_fields("", fields.as_slice());
-        let pattern = Regex::new(combine_fields("", fields.as_slice()).as_str()).expect(
-            format!(
-                "Failed to build regex using the provided patterns: '{}'",
-                pattern
-            )
-            .as_str(),
-        );
+        let pattern =
+            Regex::new(combine_fields("", fields.as_slice()).as_str()).unwrap_or_else(|_| {
+                panic!(
+                    "Failed to build regex using the provided patterns: '{}'",
+                    pattern
+                )
+            });
         let mut keys = Vec::new();
         for field in fields {
             if let Field::Named(name, _) = field {
                 keys.push(name);
             }
         }
-        Matcher {
-            keys: keys,
-            pattern: pattern,
-        }
+        Matcher { keys, pattern }
     }
 
     pub fn match_line(&self, line: &str) -> Option<HashMap<String, String>> {

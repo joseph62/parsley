@@ -15,7 +15,7 @@ impl Field {
     pub fn to_capture_group(&self) -> String {
         match self {
             Field::Named(name, expression) => format!("(?P<{}>{})", name, expression),
-            Field::Anonymous(expression) => format!("{}", expression),
+            Field::Anonymous(expression) => expression.to_string(),
         }
     }
 
@@ -46,7 +46,7 @@ pub fn all_names(fields: &[Field]) -> Vec<String> {
 
 pub fn combine_fields(separator: &str, fields: &[Field]) -> String {
     fields
-        .into_iter()
+        .iter()
         .map(|field| field.to_capture_group())
         .collect::<Vec<String>>()
         .join(separator)
@@ -56,7 +56,7 @@ fn process_raw_field(raw_field: &str) -> Field {
     let split_field: Vec<&str> = raw_field.splitn(2, FIELD_SEPARATION).collect();
     match split_field.len() {
         1 => Field::Anonymous(String::from(split_field[0])),
-        2 | _ => {
+        _ => {
             if split_field[0] == ANONYMOUS_NAME {
                 Field::Anonymous(String::from(split_field[1]))
             } else {

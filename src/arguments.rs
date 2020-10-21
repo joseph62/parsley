@@ -55,10 +55,7 @@ pub struct ParsleyArguments {
 
 impl ParsleyArguments {
     fn new(fields: Vec<Field>, format: OutputFormat) -> ParsleyArguments {
-        ParsleyArguments {
-            fields: fields,
-            format: format,
-        }
+        ParsleyArguments { fields, format }
     }
 }
 
