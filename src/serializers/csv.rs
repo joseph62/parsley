@@ -6,18 +6,18 @@ use std::collections::HashMap;
 use std::io::Write;
 
 struct CallbackWriter {
-    callback: fn(String),
+    callback: Box<dyn Fn(String)>,
 }
 
 impl CallbackWriter {
-    fn new(callback: fn(String)) -> CallbackWriter {
+    fn new(callback: Box<dyn Fn(String)>) -> CallbackWriter {
         CallbackWriter { callback }
     }
 }
 
 impl Write for CallbackWriter {
     fn write(&mut self, bytes: &[u8]) -> std::result::Result<usize, std::io::Error> {
-        let callback = self.callback;
+        let callback = &self.callback;
         if let Ok(line) = String::from_utf8(bytes.to_vec()) {
             callback(line);
         }
@@ -35,7 +35,7 @@ pub struct CsvSerializer {
 }
 
 impl CsvSerializer {
-    pub fn new(output_callback: fn(String), columns: Vec<String>) -> CsvSerializer {
+    pub fn new(output_callback: Box<dyn Fn(String)>, columns: Vec<String>) -> CsvSerializer {
         CsvSerializer {
             columns,
             writer: Writer::from_writer(CallbackWriter::new(output_callback)),

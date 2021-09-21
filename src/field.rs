@@ -39,8 +39,7 @@ pub fn all_names(fields: &[Field]) -> Vec<String> {
     fields
         .iter()
         .map(|field| field.get_name())
-        .filter(|name| name.is_some())
-        .map(|name| name.unwrap())
+        .flatten()
         .collect()
 }
 

@@ -14,7 +14,7 @@ pub trait ParsleySerializer {
 
 pub fn get_serializer(
     format: OutputFormat,
-    output_callback: fn(String),
+    output_callback: Box<dyn Fn(String)>,
     keys: Vec<String>,
 ) -> Box<dyn ParsleySerializer> {
     match format {

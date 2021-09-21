@@ -14,7 +14,7 @@ fn main() {
     let args = get_arguments(env::args());
     let mut serializer = get_serializer(
         args.format,
-        |line| println!("{}", line),
+        Box::new(|line| println!("{}", line)),
         all_names(args.fields.as_slice()),
     );
     let matcher = Matcher::new(args.fields);
