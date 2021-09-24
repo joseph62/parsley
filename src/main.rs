@@ -13,7 +13,7 @@ use std::io;
 fn main() {
     let args = get_arguments(env::args());
     let mut serializer = get_serializer(
-        args.format,
+        &args.format,
         Box::new(|line| println!("{}", line)),
         all_names(args.fields.as_slice()),
     );
@@ -38,15 +38,11 @@ fn process_next_line(matcher: Matcher, serializer: &mut Box<dyn ParsleySerialize
 
 fn read_line() -> Option<String> {
     let mut line = String::new();
-    io::stdin()
-        .read_line(&mut line)
-        .ok()
-        .map(|bytes| {
-            if bytes > 0 {
-                Option::from(line)
-            } else {
-                Option::None
-            }
-        })
-        .flatten()
+    io::stdin().read_line(&mut line).ok().and_then(|bytes| {
+        if bytes > 0 {
+            Option::from(line)
+        } else {
+            Option::None
+        }
+    })
 }

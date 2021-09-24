@@ -61,3 +61,40 @@ impl ParsleySerializer for CsvSerializer {
 
     fn end(&mut self) {}
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::iter::FromIterator;
+
+    #[test]
+    fn csv_serializer_serialize_writes_csv_row() {
+        let mut serializer = CsvSerializer::new(
+            Box::new(|line| assert_eq!(line, "value\n")),
+            vec!["test".to_string()],
+        );
+
+        serializer.serialize(HashMap::from_iter(vec![(
+            String::from("test"),
+            String::from("value"),
+        )]));
+    }
+
+    #[test]
+    fn csv_serializer_start_does_nothing() {
+        let mut serializer = CsvSerializer::new(
+            Box::new(|line| assert_eq!(line, "test\n")),
+            vec!["test".to_string()],
+        );
+
+        serializer.start();
+    }
+
+    #[test]
+    fn csv_serializer_end_does_nothing() {
+        let mut serializer =
+            CsvSerializer::new(Box::new(|_| assert!(false)), vec!["test".to_string()]);
+
+        serializer.end();
+    }
+}

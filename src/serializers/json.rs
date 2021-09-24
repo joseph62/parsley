@@ -44,14 +44,14 @@ mod tests {
 
     #[test]
     fn json_serializer_start_does_nothing() {
-        let mut serializer = JsonSerializer::new(Box::new(|line| assert_eq!(line, "")));
+        let mut serializer = JsonSerializer::new(Box::new(|_| assert!(false)));
 
         serializer.start();
     }
 
     #[test]
     fn json_serializer_end_does_nothing() {
-        let mut serializer = JsonSerializer::new(Box::new(|line| assert_eq!(line, "")));
+        let mut serializer = JsonSerializer::new(Box::new(|_| assert!(false)));
 
         serializer.end();
     }

@@ -13,7 +13,7 @@ pub trait ParsleySerializer {
 }
 
 pub fn get_serializer(
-    format: OutputFormat,
+    format: &OutputFormat,
     output_callback: Box<dyn Fn(String)>,
     keys: Vec<String>,
 ) -> Box<dyn ParsleySerializer> {

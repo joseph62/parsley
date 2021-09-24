@@ -36,17 +36,13 @@ impl FromStr for Field {
 }
 
 pub fn all_names(fields: &[Field]) -> Vec<String> {
-    fields
-        .iter()
-        .map(|field| field.get_name())
-        .flatten()
-        .collect()
+    fields.iter().filter_map(Field::get_name).collect()
 }
 
 pub fn combine_fields(separator: &str, fields: &[Field]) -> String {
     fields
         .iter()
-        .map(|field| field.to_capture_group())
+        .map(Field::to_capture_group)
         .collect::<Vec<String>>()
         .join(separator)
 }

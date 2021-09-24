@@ -3,7 +3,6 @@ extern crate regex;
 use crate::field::{combine_fields, Field};
 use regex::Regex;
 use std::collections::HashMap;
-use std::iter::FromIterator;
 
 pub struct Matcher {
     keys: Vec<String>,
@@ -31,11 +30,10 @@ impl Matcher {
 
     pub fn match_line(&self, line: &str) -> Option<HashMap<String, String>> {
         self.pattern.captures(line).map(|capture| {
-            HashMap::from_iter(
-                self.keys
-                    .iter()
-                    .map(|key| (String::from(key), String::from(&capture[key.as_str()]))),
-            )
+            self.keys
+                .iter()
+                .map(|key| (String::from(key), String::from(&capture[key.as_str()])))
+                .collect::<HashMap<String, String>>()
         })
     }
 }
