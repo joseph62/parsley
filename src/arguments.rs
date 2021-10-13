@@ -30,6 +30,12 @@ Named groups will show up in the structured output.",
                 .multiple(true),
         )
         .arg(
+            Arg::with_name("silence_errors")
+                .long("silent")
+                .short("s")
+                .help("Do not print unmatched line messages"),
+        )
+        .arg(
             Arg::with_name("format")
                 .long("format")
                 .short("f")
@@ -40,22 +46,27 @@ Named groups will show up in the structured output.",
         )
         .get_matches_from(args);
 
-    let fields = values_t!(matches, "fields", Field).unwrap_or_else(|e| e.exit());
-
-    let format = value_t!(matches, "format", OutputFormat).unwrap_or_else(|e| e.exit());
-
-    ParsleyArguments::new(fields, format)
+    ParsleyArguments::new(
+        values_t!(matches, "fields", Field).unwrap_or_else(|e| e.exit()),
+        value_t!(matches, "format", OutputFormat).unwrap_or_else(|e| e.exit()),
+        matches.is_present("silence_errors"),
+    )
 }
 
 #[derive(Debug)]
 pub struct ParsleyArguments {
     pub fields: Vec<Field>,
     pub format: OutputFormat,
+    pub silence_errors: bool,
 }
 
 impl ParsleyArguments {
-    fn new(fields: Vec<Field>, format: OutputFormat) -> ParsleyArguments {
-        ParsleyArguments { fields, format }
+    fn new(fields: Vec<Field>, format: OutputFormat, silence_errors: bool) -> ParsleyArguments {
+        ParsleyArguments {
+            fields,
+            format,
+            silence_errors,
+        }
     }
 }
 

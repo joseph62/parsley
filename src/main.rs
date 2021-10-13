@@ -18,21 +18,33 @@ fn main() {
         all_names(args.fields.as_slice()),
     );
     let matcher = Matcher::new(args.fields);
-    process_input(matcher, &mut serializer);
+    process_input(args.silence_errors, matcher, &mut serializer);
 }
 
-fn process_input(matcher: Matcher, serializer: &mut Box<dyn ParsleySerializer>) {
+fn process_input(
+    silence_errors: bool,
+    matcher: Matcher,
+    serializer: &mut Box<dyn ParsleySerializer>,
+) {
     serializer.start();
-    process_next_line(matcher, serializer);
+    process_next_line(silence_errors, matcher, serializer);
     serializer.end();
 }
-fn process_next_line(matcher: Matcher, serializer: &mut Box<dyn ParsleySerializer>) {
+fn process_next_line(
+    silence_errors: bool,
+    matcher: Matcher,
+    serializer: &mut Box<dyn ParsleySerializer>,
+) {
     if let Some(line) = read_line() {
         match matcher.match_line(line.as_str()) {
             Some(bindings) => serializer.serialize(bindings),
-            None => eprintln!("Failed to match: {}", line),
+            None => {
+                if !silence_errors {
+                    eprintln!("Failed to match: {}", line)
+                }
+            }
         }
-        process_next_line(matcher, serializer);
+        process_next_line(silence_errors, matcher, serializer);
     }
 }
 
