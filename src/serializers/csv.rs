@@ -45,7 +45,7 @@ impl CsvSerializer {
 
 impl ParsleySerializer for CsvSerializer {
     fn start(&mut self) {
-        self.writer.write_record(self.columns.as_slice()).ok();
+        self.writer.write_record(&self.columns).ok();
     }
 
     fn serialize(&mut self, map: HashMap<String, String>) {
@@ -64,37 +64,41 @@ impl ParsleySerializer for CsvSerializer {
 
 #[cfg(test)]
 mod tests {
+    use super::super::test::make_buffer_output_callback;
     use super::*;
     use std::iter::FromIterator;
 
     #[test]
     fn csv_serializer_serialize_writes_csv_row() {
-        let mut serializer = CsvSerializer::new(
-            Box::new(|line| assert_eq!(line, "value\n")),
-            vec!["test".to_string()],
-        );
+        let (buffer, output_callback) = make_buffer_output_callback();
+        let mut serializer = CsvSerializer::new(output_callback, vec!["test".to_string()]);
 
         serializer.serialize(HashMap::from_iter(vec![(
             String::from("test"),
             String::from("value"),
         )]));
+
+        assert_eq!(buffer.borrow().as_str(), "value\n");
     }
 
     #[test]
-    fn csv_serializer_start_does_nothing() {
-        let mut serializer = CsvSerializer::new(
-            Box::new(|line| assert_eq!(line, "test\n")),
-            vec!["test".to_string()],
-        );
+    fn csv_serializer_start_writes_header() {
+        let (buffer, output_callback) = make_buffer_output_callback();
+        let mut serializer =
+            CsvSerializer::new(output_callback, vec!["one".to_string(), "two".to_string()]);
 
         serializer.start();
+
+        assert_eq!(buffer.borrow().as_str(), "one,two\n");
     }
 
     #[test]
     fn csv_serializer_end_does_nothing() {
-        let mut serializer =
-            CsvSerializer::new(Box::new(|_| assert!(false)), vec!["test".to_string()]);
+        let (buffer, output_callback) = make_buffer_output_callback();
+        let mut serializer = CsvSerializer::new(output_callback, vec!["test".to_string()]);
 
         serializer.end();
+
+        assert_eq!(buffer.borrow().as_str(), "");
     }
 }

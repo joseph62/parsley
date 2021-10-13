@@ -22,3 +22,17 @@ pub fn get_serializer(
         OutputFormat::Csv => Box::new(CsvSerializer::new(output_callback, keys)),
     }
 }
+
+#[cfg(test)]
+mod test {
+    use std::cell::RefCell;
+    use std::rc::Rc;
+
+    pub fn make_buffer_output_callback() -> (Rc<RefCell<String>>, Box<dyn Fn(String)>) {
+        let buffer = Rc::new(RefCell::new(String::new()));
+        let callback_buffer = Rc::clone(&buffer);
+        let output_callback =
+            Box::new(move |line: String| callback_buffer.borrow_mut().push_str(line.as_str()));
+        (buffer, output_callback)
+    }
+}
